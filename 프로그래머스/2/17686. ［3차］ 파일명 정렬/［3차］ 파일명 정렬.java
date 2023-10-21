@@ -6,7 +6,7 @@ class Solution {
         FileName[] result = new FileName[files.length];
         for (int i = 0; i < files.length; i++) {
             String[] parseResult = parse(files[i]);
-            result[i] = new FileName(parseResult[0], parseResult[1], parseResult[2], i);
+            result[i] = new FileName(parseResult[0], parseResult[1], parseResult[2]);
         }
         
         Arrays.sort(result);
@@ -39,13 +39,11 @@ class FileName implements Comparable<FileName> {
     String head;
     String number;
     String tail;
-    int idx;
     
-    public FileName(String head, String number, String tail, int idx) {
+    public FileName(String head, String number, String tail) {
         this.head = head;
         this.number = number;
         this.tail = tail;
-        this.idx = idx;
     }
     
     public String getName() {
@@ -57,10 +55,6 @@ class FileName implements Comparable<FileName> {
         if (headCompare != 0) {
             return headCompare;
         }
-        int numberCompare = Integer.compare(Integer.parseInt(this.number), Integer.parseInt(fn.number));
-        if (numberCompare != 0) {
-            return numberCompare;
-        }
-        return Integer.compare(this.idx, fn.idx);
+        return Integer.compare(Integer.parseInt(this.number), Integer.parseInt(fn.number));
     }
 }
