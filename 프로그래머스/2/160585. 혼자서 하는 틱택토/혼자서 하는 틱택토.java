@@ -31,7 +31,6 @@ class Solution {
     private void find(boolean turn, int fIdx, int sIdx, boolean[] fVisited, boolean[] sVisited, char[][] board) {
         
         if (fIdx == firstTurn.size() && sIdx == secondTurn.size() && isTarget(board)) {
-        
             answer = 1;
         }
         if (isEnded(board)) {
@@ -46,7 +45,7 @@ class Solution {
                 Node node = firstTurn.get(i);
                 fVisited[i] = true;
                 board[node.y][node.x] = 'O';
-                find(false, fIdx + 1, sIdx, fVisited, sVisited, board);
+                find(false, i + 1, sIdx, fVisited, sVisited, board);
                 board[node.y][node.x] = '.';
                 fVisited[i] = false;
             }
@@ -58,7 +57,7 @@ class Solution {
                 Node node = secondTurn.get(i);
                 sVisited[i] = true;
                 board[node.y][node.x] = 'X';
-                find(true, fIdx, sIdx + 1, fVisited, sVisited, board);
+                find(true, fIdx, i + 1, fVisited, sVisited, board);
                 board[node.y][node.x] = '.';
                 sVisited[i] = false;
             }
@@ -77,6 +76,24 @@ class Solution {
                 return true;
             }
             if (board[0][i] != '.' && board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean isEnded(char[][] board, char c) {
+        if (board[0][0] == c && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            return true;
+        }
+        if (board[2][0] == c && board[2][0] == board[1][1] && board[1][1] == board[0][2]) {
+            return true;
+        }
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == c && board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
+                return true;
+            }
+            if (board[0][i] == c && board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
                 return true;
             }
         }
