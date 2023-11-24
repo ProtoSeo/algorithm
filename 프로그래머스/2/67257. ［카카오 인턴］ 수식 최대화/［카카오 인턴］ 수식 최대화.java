@@ -15,24 +15,18 @@ class Solution {
                 Deque<Character> operatorStack = new ArrayDeque<>();
                 char c = order.charAt(j);
                 
-                numberStack.add(nowNumbers.get(0));
+                numberStack.addLast(nowNumbers.get(0));
                 for (int k = 1; k < nowNumbers.size(); k++) {
-                    numberStack.push(nowNumbers.get(k));
-                    operatorStack.push(nowOperators.get(k - 1));
-                    if (operatorStack.getFirst() == c) {
-                        long r = numberStack.pop();
-                        long l = numberStack.pop();
-                        numberStack.push(calculate(l, r, operatorStack.pop()));
+                    numberStack.addLast(nowNumbers.get(k));
+                    operatorStack.addLast(nowOperators.get(k - 1));
+                    if (operatorStack.getLast() == c) {
+                        long r = numberStack.pollLast();
+                        long l = numberStack.pollLast();
+                        numberStack.addLast(calculate(l, r, operatorStack.pollLast()));
                     }
                 }
-                nowNumbers = new ArrayList<>();
-                nowOperators = new ArrayList<>();
-                while (!numberStack.isEmpty()) {
-                    nowNumbers.add(numberStack.pollLast());
-                }
-                while (!operatorStack.isEmpty()) {
-                    nowOperators.add(operatorStack.pollLast());
-                }
+                nowNumbers = new ArrayList<>(numberStack);
+                nowOperators = new ArrayList<>(operatorStack);
             }
             answer = Math.max(Math.abs(nowNumbers.get(0)), answer);
         }
