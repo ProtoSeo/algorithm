@@ -28,7 +28,6 @@ class Solution {
             isVisited[i] = true;
             find(idx + 1, s + numbersToArray[i], isVisited);
             isVisited[i] = false;
-            find(idx + 1, s, isVisited);
         }
     }
     
