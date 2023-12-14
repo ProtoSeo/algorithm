@@ -15,7 +15,7 @@ class Solution {
     }
     
     public long find(long a) {
-        if (parents.get(a) == null) {
+        if (!parents.containsKey(a)) {
             return a;
         }
        	long parent = find(parents.get(a));
