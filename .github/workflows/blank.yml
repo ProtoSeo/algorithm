@@ -43,6 +43,8 @@ jobs:
           ls -d */
           username=protoseo
           target_week=11
+          echo "Hello, world!" | grep "Hello"
+          git branch -r | grep "origin/protoseo/week-11"
           echo get branches
           echo "origin/$username/week-$target_week"
           git branch -r | grep "origin/$username/week-$target_week"
