@@ -18,6 +18,8 @@ jobs:
 #          path: /problem
 #          key: ${{ runner.os }}-problem-list
 #          restore-keys: ${{ runner.os }}-problem-list
+      - name: Find problem list
+        run: |
 
       - name: List pushed files
         run: |
@@ -25,6 +27,7 @@ jobs:
           for file in $changed_files; do
             result=$(echo $file | { grep "README.md" || true; })
             if [[ -z $result ]];then
+              ### 이번주 문제 파악
               echo "IS NOT README FILE"
             fi 
             echo "Content of $file:"
@@ -46,7 +49,8 @@ jobs:
           done
   
           echo $last_dir
-          
+          cat $last_dir"problem.md"
+            
           ### Settings
           username=protoseo
           now=11
