@@ -47,5 +47,4 @@ jobs:
           branches=$(git branch -r)
           
           ### Has this week branch?
-          target_branch=$("$branches" | { grep "origin/$username/week-$now" || true; })
-          echo target_branch
+          echo "$branches" | { grep "origin/$username/week-$now" || true; }
