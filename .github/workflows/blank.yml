@@ -42,7 +42,7 @@ jobs:
           
           ### Find wanted directory
           ls -d */
-          username= protoseo
+          username=protoseo
           now=11
           branches=$(git branch -r)
           
