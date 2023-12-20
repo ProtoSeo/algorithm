@@ -39,14 +39,13 @@ jobs:
         run: |
           git clone https://github.com/anti-fragile-study/algorithm-study.git
           cd algorithm-study/
-          echo directory
+          
+          ### Find wanted directory
           ls -d */
-          username=protoseo
+          username= ${ secrets.
           now=11
           branches=$(git branch -r)
-        
-          echo get branches
-          echo $branches
-          echo "$branches" | grep "origin/$username" | { grep "week-10" || true; }
-          echo "$branches" | grep "origin/$username" | { grep "week-11" || true; }
-          echo "$branches" | grep "origin/$username" | { grep "week-$now" || true; }
+          
+          ### Has this week branch?
+          target_branch=$("$branches" | { grep "origin/$username/week-$now" || true; })
+          echo target_branch
