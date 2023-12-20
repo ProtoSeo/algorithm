@@ -31,3 +31,8 @@ jobs:
       - name: List pushed files
         run: |
           git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+      - name: Clone another repository
+        run: |
+          git clone https://github.com/anti-fragile-study/algorithm-study.git
+          cd algorithm-study/
+          ls -d */
