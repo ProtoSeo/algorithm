@@ -42,11 +42,11 @@ jobs:
           echo directory
           ls -d */
           username=protoseo
-          target_week=11
+          now=11
           branches=$(git branch -r)
         
           echo get branches
           echo $branches
-          echo "$branches" | grep "origin/$username"
-          echo "origin/$username/week-$target_week"
-          
+          echo "$branches" | grep "origin/$username" | grep "week-10"
+          echo "$branches" | grep "origin/$username" | grep "week-11"
+          echo "$branches" | grep "origin/$username" | grep "week-$now"
