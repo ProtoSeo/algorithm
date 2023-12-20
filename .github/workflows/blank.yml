@@ -44,6 +44,7 @@ jobs:
           username=protoseo
           target_week=11
           echo get branches
+          echo "origin/$username/week-$target_week"
           target_branch=$(git branch -r | grep "origin/$username/week-$target_week")
           echo $target_branch
           
