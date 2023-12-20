@@ -42,5 +42,8 @@ jobs:
           echo directory
           ls -d */
           echo get branches
-          git branch -r 
+          username=protoseo
+          target_week=11
+          target_branch=$(git branch -r | grep "origin/$usename/week-$target_week")
+          echo $target_branch
           
