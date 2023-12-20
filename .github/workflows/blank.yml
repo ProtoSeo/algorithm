@@ -41,11 +41,29 @@ jobs:
           cd algorithm-study/
           
           ### Find wanted directory
-          ls -d */
+          IFS=$'\n'
+          directories=$(ls -d */ | sort)
+          last_dir=""
+          for dir in $directories;do
+            if [[ ${#dir} -eq 8 ]];then
+              last_dir="$dir"
+            fi
+          done
+  
+          echo $last_dir
+          
+          ### Settings
           username=protoseo
           now=11
           branches=$(git branch -r)
           
           ### Has this week branch?
-          echo "$branches" | { grep "origin/$username/week-$now" || true; }
+          ### echo "$branches" | { grep "origin/$username/week-$now" || true; }
           target_branch="$branches" | { grep "origin/$username/week-$now" || true; }
+          echo $target_branch
+#          if [[ -z target_branch ]];then
+#            git checkout -b "$username/week-$now"
+#            echo $(git branch --show-current)
+#          else
+#            git checkout
+#          fi
