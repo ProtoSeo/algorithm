@@ -46,6 +46,7 @@ jobs:
           branches=$(git branch -r)
         
           echo get branches
+          echo $branches
           echo $branches | grep "origin/$username/week-$target_week"
           echo "origin/$username/week-$target_week"
           git branch -r | grep "origin/$username/week-$target_week"
