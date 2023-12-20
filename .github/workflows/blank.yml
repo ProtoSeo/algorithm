@@ -38,5 +38,5 @@ jobs:
           echo directory
           ls -d */
           echo get branches
-          git branch
+          git branch -r 
           
