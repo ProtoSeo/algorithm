@@ -28,4 +28,4 @@ jobs:
           echo test, and deploy your project.
       - name: List pushed files
         run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+          git diff --name-only
