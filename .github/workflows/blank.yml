@@ -41,9 +41,10 @@ jobs:
           cd algorithm-study/
           echo directory
           ls -d */
-          echo get branches
           username=protoseo
           target_week=11
+          echo get branches
+          git branch -r
           target_branch=$(git branch -r | grep "origin/$usename/week-$target_week")
           echo $target_branch
           
