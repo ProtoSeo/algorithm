@@ -19,19 +19,14 @@ jobs:
 #          key: ${{ runner.os }}-problem-list
 #          restore-keys: ${{ runner.os }}-problem-list
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
       - name: List pushed files
         run: |
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           for file in $changed_files; do
+            result=$(echo $file | { grep "README.md" || true; })
+            if [[ -z $result ]];then
+              echo "IS NOT README FILE"
+            fi 
             echo "Content of $file:"
             cat $file
           done
@@ -65,5 +60,6 @@ jobs:
 #            git checkout -b "$username/week-$now"
 #            echo $(git branch --show-current)
 #          else
-#            git checkout
+#            git pull origin "$username/week-$now"
+  #          echo $(git branch --show-current)
 #          fi
