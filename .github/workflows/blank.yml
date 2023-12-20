@@ -47,6 +47,6 @@ jobs:
         
           echo get branches
           echo $branches
-          echo "$branches" | grep "origin/$username" | grep "week-10"
-          echo "$branches" | grep "origin/$username" | grep "week-11"
-          echo "$branches" | grep "origin/$username" | grep "week-$now"
+          echo "$branches" | grep "origin/$username" | { grep "week-10" || true; }
+          echo "$branches" | grep "origin/$username" | { grep "week-11" || true; }
+          echo "$branches" | grep "origin/$username" | { grep "week-$now" || true; }
