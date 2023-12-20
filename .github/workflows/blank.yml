@@ -30,7 +30,7 @@ jobs:
           echo test, and deploy your project.
       - name: List pushed files
         run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           for file in $changed_files; do
             echo "Content of $file:"
             cat $file
