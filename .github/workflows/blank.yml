@@ -36,7 +36,7 @@ jobs:
       - name: run python script
         id: run-python-script
         run: |
-          python parser.py $FILE_NAME
+          result=$(python parser.py $FILE_NAME)
 #          result=$(python parser.py $file_name)
 #          printf $result
         env:
