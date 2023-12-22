@@ -5,6 +5,22 @@ on:
     branches: [ "main", "test-workflow" ]
 
 jobs:
+  extract-problem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Clone another repository
+        run: |
+          git clone https://github.com/anti-fragile-study/algorithm-study.git
+      - run: ls -al
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: run python script
+        run: python parser.py
+      - run: cat result.txt
   pull-target-repository:
     runs-on: ubuntu-latest
     steps:
@@ -18,9 +34,6 @@ jobs:
 #          path: /problem
 #          key: ${{ runner.os }}-problem-list
 #          restore-keys: ${{ runner.os }}-problem-list
-      - name: Find problem list
-        run: |
-
       - name: List pushed files
         run: |
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
