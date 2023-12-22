@@ -23,6 +23,7 @@ jobs:
               echo "file_directory=$(printf $file | sed 's/"//g')" >> $GITHUB_OUTPUT
             fi 
           done
+          echo ${{ steps.find-target-problem.file_directory}}
       - name: Clone another repository
         run: |
           git clone https://github.com/anti-fragile-study/algorithm-study.git
@@ -32,7 +33,8 @@ jobs:
           python-version: '3.10'
       - name: run python script
         run: |
-          file_directory=${{ steps.find-target-problem.file_directory}}
+#          file_directory=${{ steps.find-target-problem.file_directory}}
+          echo $file_directory
           result=$(python parser.py "$file_directory")
           echo $result
   pull-target-repository:
