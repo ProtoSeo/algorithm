@@ -43,6 +43,7 @@ jobs:
           FILE_NAME: ${{ env.FILE_NAME }}
       - name: get result
         run: |
+          echo $result
           echo ${{ steps.run-python-script.outputs.my_output }}
   pull-target-repository:
     runs-on: ubuntu-latest
