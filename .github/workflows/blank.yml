@@ -42,7 +42,7 @@ jobs:
             if [[ -z $result ]];then
               ### 이번주 문제 파악
               file_name=$(echo $file | sed 's/"//g')
-              echo "Content of $file_name:"
+              printf "Content of $file_name:"
               cat $file_name
               echo "IS NOT README FILE"
             fi 
