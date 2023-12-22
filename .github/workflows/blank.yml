@@ -19,10 +19,12 @@ jobs:
             result=$(echo $file | { grep "README.md" || true; })
             if [[ -z $result ]];then
               file_name=$(printf $file | sed 's/"//g')
+              echo "FILE_NAME=$file_name" >> $GITHUB_ENV
               printf "Content of $file_name:"
               echo "file_directory=$(printf $file | sed 's/"//g')" >> $GITHUB_OUTPUT
             fi 
           done
+          echo ${{ env.FILE_NAME }}
           echo ${{ steps.find-target-problem.file_directory}}
       - name: Clone another repository
         run: |
@@ -32,10 +34,12 @@ jobs:
         with:
           python-version: '3.10'
       - name: run python script
-        run: | 
-          python parser.py $file_name
+        run: |
+          python parser.py $FILE_NAME
 #          result=$(python parser.py $file_name)
 #          printf $result
+        env:
+          FILE_NAME: ${{ env.FILE_NAME }}
   pull-target-repository:
     runs-on: ubuntu-latest
     steps:
