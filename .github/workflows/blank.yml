@@ -35,7 +35,7 @@ jobs:
         run: | 
           echo $file_directory
           echo $file_name
-          result=$(python parser.py "$file_name")
+          result=$(python parser.py $file_name)
           echo $result
   pull-target-repository:
     runs-on: ubuntu-latest

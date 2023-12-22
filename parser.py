@@ -17,6 +17,7 @@ if len(sys.argv) != 2:
     exit(1)
 
 target_problem_file_name = sys.argv[1]
+print(target_problem_file_name)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 read_file_path = os.path.join(script_dir, "algorithm-study/README.md")
 
