@@ -34,12 +34,16 @@ jobs:
         with:
           python-version: '3.10'
       - name: run python script
+        id: run-python-script
         run: |
           python parser.py $FILE_NAME
 #          result=$(python parser.py $file_name)
 #          printf $result
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
+      - name: get result
+        run: |
+          echo ${{ steps.run-python-script.outputs.my_output }}
   pull-target-repository:
     runs-on: ubuntu-latest
     steps:
