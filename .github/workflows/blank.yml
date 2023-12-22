@@ -32,10 +32,10 @@ jobs:
         with:
           python-version: '3.10'
       - name: run python script
-        run: |
-#          file_directory=${{ steps.find-target-problem.file_directory}}
+        run: | 
           echo $file_directory
-          result=$(python parser.py "$file_directory")
+          echo $file_name
+          result=$(python parser.py "$file_name")
           echo $result
   pull-target-repository:
     runs-on: ubuntu-latest
