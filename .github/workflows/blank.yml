@@ -41,10 +41,10 @@ jobs:
             result=$(echo $file | { grep "README.md" || true; })
             if [[ -z $result ]];then
               ### 이번주 문제 파악
+              echo "Content of $file:"
+              cat $file
               echo "IS NOT README FILE"
             fi 
-            echo "Content of $file:"
-            cat $file
           done
       - name: Clone another repository
         run: |
