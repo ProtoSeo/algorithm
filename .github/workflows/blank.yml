@@ -54,7 +54,7 @@ jobs:
           branches=$(git branch -r)
           echo $branches
           target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
-          directory="week-$week_number/$username"
+          directory="week-$week_number/$username/$problem_name.$language"
           echo $target_branch
           echo "origin/$username/week-$week_number"
           if [[ -z $target_branch ]];then
