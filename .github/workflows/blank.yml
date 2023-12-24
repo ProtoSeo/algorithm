@@ -37,47 +37,21 @@ jobs:
           FILE_NAME: ${{ env.FILE_NAME }}
       - name: test
         run: |
-          cat problem/result.txt
-          echo "\n"
-          test=$(cat problem/result.txt)
           week_number=$(echo $test | grep -oE 'week=[0-9]+' | sed 's/^week=//')
           type=$(echo $test | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
-          number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
-          name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
+          problem_number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
+          problem_name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
           language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
-          echo $week_number
-          echo $type
-          echo $number
-          echo $name
-          echo $language
-      - name: Clone another repository
-        run: |
-          ### Find wanted directory
-          IFS=$'\n'
-          directories=$(ls -d */ | sort)
-          last_dir=""
-          for dir in $directories;do
-            if [[ ${#dir} -eq 8 ]];then
-              last_dir="$dir"
-            fi
-          done
-  
-          echo $last_dir
-          cat $last_dir"problem.md"
-            
-          ### Settings
-          username=protoseo
-          now=11
-          branches=$(git branch -r)
           
-          ### Has this week branch?
-          ### echo "$branches" | { grep "origin/$username/week-$now" || true; }
-          target_branch="$branches" | { grep "origin/$username/week-$now" || true; }
+          cd algorith-study
+          branches=$(git branch -r)
+          target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
           echo $target_branch
-#          if [[ -z target_branch ]];then
-#            git checkout -b "$username/week-$now"
-#            echo $(git branch --show-current)
-#          else
-#            git pull origin "$username/week-$now"
-  #          echo $(git branch --show-current)
-#          fi
+          echo $(git branch --show-current)
+          if [[ -z target_branch ]];then
+#            git checkout -b "$username/week-$week_number"
+            echo $(git branch --show-current)
+          else
+#            git pull origin "$username/week-$week_number"
+            echo $(git branch --show-current)
+          fi
