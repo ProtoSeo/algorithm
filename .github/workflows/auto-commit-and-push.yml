@@ -1,0 +1,85 @@
+name: commit-with-another-repository
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  ORGANIZATION: anti-fragile-study
+  REPOSITORY: algorithm-study
+  PROBLEM_LIST_FILE: ../algorithm-study/README.md
+
+jobs:
+  auto-commit-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: List pushed files
+        id: find-target-problem
+        run: |
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          for file_name in $changed_files; do
+            is_not_readme=$(echo $file_name | { grep "README.md" || true; })
+            if [[ -z $is_not_readme ]];then
+              echo "FILE_NAME=$(printf $file_name | sed 's/"//g')" >> $GITHUB_ENV
+            fi 
+          done
+          echo ${{ env.FILE_NAME }}
+      - name: clone target repository
+        run: git clone "https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}"
+      - name: set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: run python script
+        id: run-python-script
+        run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
+        env:
+          FILE_NAME: ${{ env.FILE_NAME }}
+          PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
+      - name: create commit message, and push target repository branch
+        run: |
+          if [[ ! -e "problem/result.txt" ]];then
+            echo "can't found problem in problem list"
+            exit 0
+          fi
+          parse_result=$(cat problem/result.txt)
+          week_number=$(echo $parse_result | grep -oE 'week=[0-9]+' | sed 's/^week=//')
+          type=$(echo $parse_result | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
+          problem_number=$(echo $parse_result | grep -oE 'number=[0-9]+' | sed 's/^number=//')
+          problem_name=$(echo $parse_result | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
+          language=$(echo $parse_result | grep -oE 'language=[a-z]+' | sed 's/^language=//')
+          
+          ### Create Commit Message
+          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
+            commit_message="프로그래머스 $problem_name 문제 풀이"
+          else
+            commit_message="백준 $problem_number 번 $problem_name 문제 풀이"
+          fi 
+          
+          cd algorithm-study
+          git config --global user.email "proto_seo@naver.com"
+          git config --global user.name "$GITHUB_ACTOR" 
+          
+          username=$(echo $GITHUB_ACTOR | tr [:upper:] [:lower:]) 
+          target_branch="$username/week-$week_number"
+          has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
+          directory="week-$week_number/$username/$problem_name.$language"
+          
+          ### Checkout target branch
+          if [[ -z $has_target_branch ]];then
+            echo "create target branch" 
+            git checkout -b "$target_branch"
+          else
+            echo "already has target branch"
+            git checkout -t "origin/$target_branch"
+          fi
+          
+          cat "../$FILE_NAME" >> $directory
+          git add .
+          git commit -m "$commit_message"
+          git push origin "$username/week-$week_number"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
