@@ -45,14 +45,16 @@ jobs:
           language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
           
           cd algorithm-study
+          username=protoseo
           branches=$(git branch -r)
           target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
+          directory="week-$week_number/$username"
           echo $target_branch
-          echo $(git branch --show-current)
           if [[ -z target_branch ]];then
-          #            git checkout -b "$username/week-$week_number"
-            echo "has target branch" 
-          else
-          #            git pull origin "$username/week-$week_number"
             echo "create target branch" 
+            git checkout -b "$username/week-$week_number"
+            cat "../$FILENAME"
+          else
+            echo "has target branch" 
+            git pull origin "$username/week-$week_number"
           fi
