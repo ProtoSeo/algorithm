@@ -51,8 +51,8 @@ jobs:
           echo $(git branch --show-current)
           if [[ -z target_branch ]];then
           #            git checkout -b "$username/week-$week_number"
-          echo $(git branch --show-current)
+            echo "has target branch" 
           else
           #            git pull origin "$username/week-$week_number"
-          echo $(git branch --show-current)
+            echo "create target branch" 
           fi
