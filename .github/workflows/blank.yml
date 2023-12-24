@@ -35,49 +35,51 @@ jobs:
         run: python problem/parser.py $FILE_NAME
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
+      - name: test0
+        run: |
+          ls -al
       - name: test
         run: |
-          test=$(cat problem/result.txt)
-          week_number=$(echo $test | grep -oE 'week=[0-9]+' | sed 's/^week=//')
-          type=$(echo $test | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
-          problem_number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
-          problem_name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
-          language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
-          echo $week_number
-          echo $type
-          echo $problem_name
-          echo $language
-          echo ${{ env.FILE_NAME }}
+          parse_result=$(cat problem/result.txt)
+          week_number=$(echo $parse_result | grep -oE 'week=[0-9]+' | sed 's/^week=//')
+          type=$(echo $parse_result | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
+          problem_number=$(echo $parse_result | grep -oE 'number=[0-9]+' | sed 's/^number=//')
+          problem_name=$(echo $parse_result | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
+          language=$(echo $parse_result | grep -oE 'language=[a-z]+' | sed 's/^language=//')
+          
+          ### Create Commit Message
+          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
+            commit_message="프로그래머스 $problem_name 문제 풀이"
+          else
+            commit_message="백준 $problem_number 번 $problem_name 문제 풀이"
+          fi 
           
           cd algorithm-study
           git config --global user.email "proto_seo@naver.com"
           git config --global user.name "GA-protoseo"
+          
           username=protoseo
-          branches=$(git branch -r)
-          echo $branches
-          target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
+          target_branch="$username/week-$week_number"
+          has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
           directory="week-$week_number/$username/$problem_name.$language"
-          echo $target_branch
-          echo "origin/$username/week-$week_number"
-          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
-            commit_message="프로그래머스 $problem_name 문제 풀이"
-          else
-            commit_message="백준 $problem_number번 $problem_name 문제 풀이"
-          fi 
-          printf $commit_message
-          if [[ -z $target_branch ]];then
+          
+          ### Checkout target branch
+          if [[ -z $has_target_branch ]];then
             echo "create target branch" 
-            git checkout -b "$username/week-$week_number"
-            cat "../$FILE_NAME" >> $directory
-            ls "week-$week_number/$username"
-            git add .
-            git commit -m "$commit_message"
-            git push origin "$username/week-$week_number"
+            git checkout -b "$target_branch"
           else
-            echo "has target branch"
-            git checkout -t "origin/$username/week-$week_number"
-            git pull origin "$username/week-$week_number"
+            echo "already has target branch"
+            git checkout -t "origin/$target_branch"
           fi
+          
+          cat "../$FILE_NAME" >> $directory
+          git add .
+          git commit -m "$commit_message"
+          git push origin "$username/week-$week_number"
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: test2
+        run: |
+          ls -al
+          echo $commit_message
