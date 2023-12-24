@@ -52,7 +52,7 @@ jobs:
           username=protoseo
           branches=$(git branch -r)
           echo $branches
-          target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
+          target_branch=$(echo "$branches" | { grep "origin/$username/week-$week_number" || true; })
           directory="week-$week_number/$username"
           echo $target_branch
           echo "origin/$username/week-$week_number"
@@ -62,6 +62,6 @@ jobs:
             cat "../$FILENAME"
           else
             echo "has target branch"
-            git checkout -t "$username/week-$week_number"
+            git checkout -t "origin/$username/week-$week_number"
             git pull origin "$username/week-$week_number"
           fi
