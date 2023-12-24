@@ -4,6 +4,11 @@ on:
   push:
     branches: [ "main", "test-workflow" ]
 
+env:
+  ORGANIZATION: anti-fragile-study
+  REPOSITORY: algorithm-study
+  PROBLEM_LIST_FILE: ../algorithm-study/README.md
+
 jobs:
   extract-problem:
     runs-on: ubuntu-latest
@@ -27,7 +32,6 @@ jobs:
           target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}
           echo $target_uri
           git clone "https://${{ github.actor }}:${{ secrets.GH_PAT }}@$target_uri"
-          echo "PROBLEM_LIST_FILE=../${{ env.REPOSITORY }}/${{ env.PROBLEMS_FILE }}" >> $GITHUB_ENV
       - name: set up python
         uses: actions/setup-python@v5
         with:
@@ -38,7 +42,6 @@ jobs:
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
           PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
-
       - name: create commit message
         run: |
           parse_result=$(cat problem/result.txt)
@@ -59,6 +62,7 @@ jobs:
           git config --global user.email "proto_seo@naver.com"
           git config --global user.name "${{ github.actor }}" 
           
+          echo $GITHUB_ACTOR
           username=${{ github.actor }}
           target_branch="$username/week-$week_number"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
