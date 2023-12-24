@@ -15,31 +15,31 @@ jobs:
         id: find-target-problem
         run: |
           changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          for file in $changed_files; do
-            result=$(echo $file | { grep "README.md" || true; })
-            if [[ -z $result ]];then
-              file_name=$(printf $file | sed 's/"//g')
-              echo "FILE_NAME=$file_name" >> $GITHUB_ENV
-              printf "Content of $file_name:"
+          for file_name in $changed_files; do
+            is_not_readme=$(echo $file_name | { grep "README.md" || true; })
+            if [[ -z $is_not_readme ]];then
+              echo "FILE_NAME=$(printf $file_name | sed 's/"//g')" >> $GITHUB_ENV
             fi 
           done
           echo ${{ env.FILE_NAME }}
-      - name: Clone target repository
-        run: git clone https://ProtoSeo:${{ secrets.GH_PAT }}@github.com/anti-fragile-study/algorithm-study.git
-      - name: test-1
-        run: ls -al
-      - uses: actions/setup-python@v5
+      - name: clone target repository
+        run: |
+          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY_NAME }}
+          echo $target_uri
+          git clone "https://${{ github.actor }}:${{ secrets.GH_PAT }}@$target_uri"
+          echo "PROBLEM_LIST_FILE=../${{ env.REPOSITORY_NAME }}/${{ env.PROBLEM_FILE }}" >> $GITHUB_ENV
+      - name: set up python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: run python script
         id: run-python-script
-        run: python problem/parser.py $FILE_NAME
+        run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
-      - name: test0
-        run: |
-          ls -al
-      - name: test
+          PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
+
+      - name: create commit message
         run: |
           parse_result=$(cat problem/result.txt)
           week_number=$(echo $parse_result | grep -oE 'week=[0-9]+' | sed 's/^week=//')
@@ -57,13 +57,9 @@ jobs:
           
           cd algorithm-study
           git config --global user.email "proto_seo@naver.com"
-          git config --global user.name "ProtoSeo" 
+          git config --global user.name "${{ github.actor }}" 
           
-          
-          echo "${{ github.actor_id }}"
-          echo "${{ github.actor }}"
-          
-          username=protoseo
+          username=${{ github.actor }}
           target_branch="$username/week-$week_number"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
           directory="week-$week_number/$username/$problem_name.$language"
@@ -84,6 +80,9 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: git add, commit, push in target branch
+        run: |
+          echo "Hello"
       - name: test2
         run: |
           ls -al

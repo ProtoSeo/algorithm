@@ -12,18 +12,17 @@ def parse_problem_info(file_name):
     return [problem_type, problem_number, problem_name, language]
 
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     print("Please input target problem file directory")
     exit(1)
 
 target_problem_file_name = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
-read_file_path = os.path.join(script_dir, "../algorithm-study/README.md")
+read_file_path = os.path.join(script_dir, sys.argv[2])
 
 start_week_pattern = re.compile('<td>(\d+)주차</td>')
 
 readme_file = open(read_file_path, 'r')
-result_file = open(os.path.join(script_dir, "result.txt"), 'w')
 
 problems_by_week = {}
 is_week_start = False
@@ -49,12 +48,10 @@ for line in readme_file:
 target_problem_info = parse_problem_info(target_problem_file_name)
 for key in problems_by_week:
     if target_problem_info[0]+ ' ' + target_problem_info[1] in problems_by_week[key]:
+        result_file = open(os.path.join(script_dir, "result.txt"), 'w')
         result = f"week={key}\n" \
                  f"type={target_problem_info[0]}\n" \
                  f"number={target_problem_info[1]}\n" \
                  f"name={target_problem_info[2]}\n" \
                  f"language={target_problem_info[3]}\n"
         result_file.write(result)
-        exit(0)
-
-result_file.write("not found")
