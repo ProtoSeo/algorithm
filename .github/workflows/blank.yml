@@ -53,17 +53,18 @@ jobs:
           
           ### Create Commit Message
           if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
+            echo "COMMIT_MESSAGE=프로그래머스 $problem_name 문제 풀이" >> $GITHUB_ENV
             commit_message="프로그래머스 $problem_name 문제 풀이"
           else
+            echo "COMMIT_MESSAGE=백준 $problem_number 번 $problem_name 문제 풀이" >> $GITHUB_ENV
             commit_message="백준 $problem_number 번 $problem_name 문제 풀이"
           fi 
           
           cd algorithm-study
           git config --global user.email "proto_seo@naver.com"
-          git config --global user.name "${{ github.actor }}" 
+          git config --global user.name "$GITHUB_ACTOR" 
           
-          echo $GITHUB_ACTOR
-          username=${{ github.actor }}
+          username=$($GITHUB_ACTOR | tr [:upper:] [:lower:]) 
           target_branch="$username/week-$week_number"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
           directory="week-$week_number/$username/$problem_name.$language"
