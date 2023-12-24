@@ -42,8 +42,12 @@ jobs:
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
           PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
-      - name: create commit message
+      - name: create commit message, and push target repository branch
         run: |
+          if [[ ! -e "problem/result.txt" ]];then
+            echo "can't found problem in problem list"
+            exit 0
+          fi
           parse_result=$(cat problem/result.txt)
           week_number=$(echo $parse_result | grep -oE 'week=[0-9]+' | sed 's/^week=//')
           type=$(echo $parse_result | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
@@ -53,10 +57,8 @@ jobs:
           
           ### Create Commit Message
           if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
-            echo "COMMIT_MESSAGE=프로그래머스 $problem_name 문제 풀이" >> $GITHUB_ENV
             commit_message="프로그래머스 $problem_name 문제 풀이"
           else
-            echo "COMMIT_MESSAGE=백준 $problem_number 번 $problem_name 문제 풀이" >> $GITHUB_ENV
             commit_message="백준 $problem_number 번 $problem_name 문제 풀이"
           fi 
           
@@ -82,14 +84,5 @@ jobs:
           git add .
           git commit -m "$commit_message"
           git push origin "$username/week-$week_number"
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: git add, commit, push in target branch
-        run: |
-          echo "Hello"
-      - name: test2
-        run: |
-          ls -al
-          echo $commit_message
-          echo $username
