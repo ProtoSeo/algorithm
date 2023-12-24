@@ -43,6 +43,10 @@ jobs:
           problem_number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
           problem_name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
           language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
+          echo $week_number
+          echo $type
+          echo $problem_name
+          echo $language
           
           cd algorithm-study
           username=protoseo
@@ -51,11 +55,13 @@ jobs:
           target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
           directory="week-$week_number/$username"
           echo $target_branch
+          echo "origin/$username/week-$week_number"
           if [[ -z target_branch ]];then
             echo "create target branch" 
             git checkout -b "$username/week-$week_number"
             cat "../$FILENAME"
           else
-            echo "has target branch" 
+            echo "has target branch"
+            git checkout -t "$username/week-$week_number"
             git pull origin "$username/week-$week_number"
           fi
