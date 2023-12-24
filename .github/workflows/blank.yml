@@ -61,7 +61,9 @@ jobs:
             echo "create target branch" 
             git checkout -b "$username/week-$week_number"
             cat "../$FILE_NAME" >> $directory
-            ls -al
+            ls "week-$week_number/$username"
+            cat $directory
+            git push origin "$username/week-$week_number"
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
