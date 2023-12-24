@@ -37,6 +37,7 @@ jobs:
           FILE_NAME: ${{ env.FILE_NAME }}
       - name: test
         run: |
+          test=$(cat problem/result.txt)
           week_number=$(echo $test | grep -oE 'week=[0-9]+' | sed 's/^week=//')
           type=$(echo $test | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
           problem_number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
