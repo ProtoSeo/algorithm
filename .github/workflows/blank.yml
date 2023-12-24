@@ -51,7 +51,7 @@ jobs:
           
           cd algorithm-study
           git config --global user.email "proto_seo@naver.com"
-          git config --global user.name "ProtoSeo"
+          git config --global user.name "GA-protoseo"
           username=protoseo
           branches=$(git branch -r)
           echo $branches
@@ -60,9 +60,9 @@ jobs:
           echo $target_branch
           echo "origin/$username/week-$week_number"
           if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
-            commit_message="프로그래머스 $name 문제 풀이"
+            commit_message="프로그래머스 $problem_name 문제 풀이"
           else
-            commit_message="백준 $number번 $name 문제 풀이"
+            commit_message="백준 $problem_number번 $problem_name 문제 풀이"
           fi 
           printf $commit_message
           if [[ -z $target_branch ]];then
@@ -72,7 +72,6 @@ jobs:
             ls "week-$week_number/$username"
             git add .
             git commit -m "$commit_message"
-            git push origin "$username/week-$week_number"
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
@@ -80,3 +79,4 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
