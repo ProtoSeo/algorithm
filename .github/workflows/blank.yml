@@ -47,6 +47,7 @@ jobs:
           echo $type
           echo $problem_name
           echo $language
+          echo ${{ env.FILE_NAME }}
           
           cd algorithm-study
           username=protoseo
@@ -59,7 +60,8 @@ jobs:
           if [[ -z $target_branch ]];then
             echo "create target branch" 
             git checkout -b "$username/week-$week_number"
-            cat "../$FILENAME"
+            cat "../${{ env.FILE_NAME }}"
+            cat "../$FILE_NAME"
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
