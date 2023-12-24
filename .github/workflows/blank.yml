@@ -47,6 +47,7 @@ jobs:
           cd algorithm-study
           username=protoseo
           branches=$(git branch -r)
+          echo $branches
           target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
           directory="week-$week_number/$username"
           echo $target_branch
