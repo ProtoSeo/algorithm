@@ -66,7 +66,8 @@ jobs:
           username=$(echo $GITHUB_ACTOR | tr [:upper:] [:lower:]) 
           target_branch="$username/week-$week_number"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
-          directory="week-$week_number/$username/$problem_name.$language"
+          directory="week-$week_number/$username/"
+          problem="$problem_name.$language"
           
           ### Checkout target branch
           if [[ -z $has_target_branch ]];then
@@ -77,7 +78,8 @@ jobs:
             git checkout -t "origin/$target_branch"
           fi
           
-          cat "../$FILE_NAME" >> $directory
+          mkdir -p $directory
+          cat "../$FILE_NAME" >> $directory$problem
           git add .
           git commit -m "$commit_message"
           git push origin "$username/week-$week_number"
