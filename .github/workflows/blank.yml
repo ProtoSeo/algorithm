@@ -44,7 +44,7 @@ jobs:
           problem_name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
           language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
           
-          cd algorith-study
+          cd algorithm-study
           branches=$(git branch -r)
           target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
           echo $target_branch
