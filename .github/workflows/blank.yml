@@ -25,7 +25,7 @@ jobs:
           done
           echo ${{ env.FILE_NAME }}
       - name: Clone target repository
-        run: git clone https://github.com/anti-fragile-study/algorithm-study.git
+        run: git clone https://ProtoSeo:${{ secrets.GH_PAT }}@github.com/anti-fragile-study/algorithm-study.git
       - run: ls -al
       - uses: actions/setup-python@v5
         with:
@@ -72,6 +72,7 @@ jobs:
             ls "week-$week_number/$username"
             git add .
             git commit -m "$commit_message"
+            git push origin "$username/week-$week_number"
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
