@@ -24,10 +24,10 @@ jobs:
           echo ${{ env.FILE_NAME }}
       - name: clone target repository
         run: |
-          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY_NAME }}
+          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}
           echo $target_uri
           git clone "https://${{ github.actor }}:${{ secrets.GH_PAT }}@$target_uri"
-          echo "PROBLEM_LIST_FILE=../${{ env.REPOSITORY_NAME }}/${{ env.PROBLEM_FILE }}" >> $GITHUB_ENV
+          echo "PROBLEM_LIST_FILE=../${{ env.REPOSITORY }}/${{ env.PROBLEMS_FILE }}" >> $GITHUB_ENV
       - name: set up python
         uses: actions/setup-python@v5
         with:
