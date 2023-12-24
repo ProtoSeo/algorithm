@@ -52,11 +52,11 @@ jobs:
           username=protoseo
           branches=$(git branch -r)
           echo $branches
-          target_branch=$(echo "$branches" | { grep "origin/$username/week-$week_number" || true; })
+          target_branch="$branches" | { grep "origin/$username/week-$week_number" || true; }
           directory="week-$week_number/$username"
           echo $target_branch
           echo "origin/$username/week-$week_number"
-          if [[ -z target_branch ]];then
+          if [[ -z $target_branch ]];then
             echo "create target branch" 
             git checkout -b "$username/week-$week_number"
             cat "../$FILENAME"
