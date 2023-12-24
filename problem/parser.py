@@ -12,9 +12,9 @@ def parse_problem_info(file_name):
     return [problem_type, problem_number, problem_name, language]
 
 
-if len(sys.argv) != 3:
-    print("Please input target problem file directory")
-    exit(1)
+if len(sys.argv) != 3 or not re.search('(?:/[^/]+){3}/?', sys.argv[1]):
+    print("please check script input")
+    exit(0)
 
 target_problem_file_name = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
