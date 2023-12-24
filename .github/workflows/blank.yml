@@ -35,15 +35,12 @@ jobs:
           python-version: '3.10'
       - name: run python script
         id: run-python-script
-        run: |
-          result=$(python parser.py $FILE_NAME)
-#          result=$(python parser.py $file_name)
-#          printf $result
+        run: python problem/parser.py $FILE_NAME
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
       - name: get result
         run: |
-          echo $result
+          cat problem/result.txt
           echo ${{ steps.run-python-script.outputs.my_output }}
   pull-target-repository:
     runs-on: ubuntu-latest
