@@ -49,11 +49,11 @@ for line in readme_file:
 target_problem_info = parse_problem_info(target_problem_file_name)
 for key in problems_by_week:
     if target_problem_info[0]+ ' ' + target_problem_info[1] in problems_by_week[key]:
-        result = f"week {key}\n" \
-                 f"type {target_problem_info[0]}\n" \
-                 f"number {target_problem_info[1]}\n" \
-                 f"name {target_problem_info[2]}\n" \
-                 f"language {target_problem_info[3]}\n"
+        result = f"week={key}\n" \
+                 f"type={target_problem_info[0]}\n" \
+                 f"number={target_problem_info[1]}\n" \
+                 f"name={target_problem_info[2]}\n" \
+                 f"language={target_problem_info[3]}\n"
         result_file.write(result)
         exit(0)
 

@@ -21,14 +21,11 @@ jobs:
               file_name=$(printf $file | sed 's/"//g')
               echo "FILE_NAME=$file_name" >> $GITHUB_ENV
               printf "Content of $file_name:"
-              echo "file_directory=$(printf $file | sed 's/"//g')" >> $GITHUB_OUTPUT
             fi 
           done
           echo ${{ env.FILE_NAME }}
-          echo ${{ steps.find-target-problem.file_directory}}
-      - name: Clone another repository
-        run: |
-          git clone https://github.com/anti-fragile-study/algorithm-study.git
+      - name: Clone target repository
+        run: git clone https://github.com/anti-fragile-study/algorithm-study.git
       - run: ls -al
       - uses: actions/setup-python@v5
         with:
@@ -38,39 +35,23 @@ jobs:
         run: python problem/parser.py $FILE_NAME
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
-      - name: get result
+      - name: test
         run: |
           cat problem/result.txt
-          echo ${{ steps.run-python-script.outputs.my_output }}
-  pull-target-repository:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-#      - name: Cache problem list
-#        uses: actions/cache@v3
-#        with:
-#          path: /problem
-#          key: ${{ runner.os }}-problem-list
-#          restore-keys: ${{ runner.os }}-problem-list
-      - name: List pushed files
-        run: |
-          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          for file in $changed_files; do
-            result=$(echo $file | { grep "README.md" || true; })
-            if [[ -z $result ]];then
-              file_name=$(printf $file | sed 's/"//g')
-              printf "Content of $file_name:"
-              echo "file_name=$(printf $file | sed 's/"//g')" >> $GITHUB_OUTPUT
-            fi 
-          done
+          echo "\n"
+          test=$(cat problem/result.txt)
+          week_number=$(echo $test | grep -oE 'week=[0-9]+' | sed 's/^week=//')
+          type=$(echo $test | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
+          number=$(echo $test | grep -oE 'number=[0-9]+' | sed 's/^number=//')
+          name=$(echo $test | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
+          language=$(echo $test | grep -oE 'language=[a-z]+' | sed 's/^language=//')
+          echo $week_number
+          echo $type
+          echo $number
+          echo $name
+          echo $language
       - name: Clone another repository
         run: |
-          git clone https://github.com/anti-fragile-study/algorithm-study.git
-          cd algorithm-study/
-          
           ### Find wanted directory
           IFS=$'\n'
           directories=$(ls -d */ | sort)
