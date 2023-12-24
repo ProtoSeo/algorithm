@@ -56,6 +56,12 @@ jobs:
           fi 
           
           cd algorithm-study
+          git config --global user.email "proto_seo@naver.com"
+          git config --global user.name "ProtoSeo" 
+          
+          
+          echo "${{ github.actor_id }}"
+          echo "${{ github.actor }}"
           
           username=protoseo
           target_branch="$username/week-$week_number"
