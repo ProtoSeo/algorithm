@@ -64,7 +64,7 @@ jobs:
           git config --global user.email "proto_seo@naver.com"
           git config --global user.name "$GITHUB_ACTOR" 
           
-          username=$($GITHUB_ACTOR | tr [:upper:] [:lower:]) 
+          username=$(echo $GITHUB_ACTOR | tr [:upper:] [:lower:]) 
           target_branch="$username/week-$week_number"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
           directory="week-$week_number/$username/$problem_name.$language"
