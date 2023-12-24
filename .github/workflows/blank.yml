@@ -69,9 +69,12 @@ jobs:
             cat "../$FILE_NAME" >> $directory
             ls "week-$week_number/$username"
             git add .
-            git commit -m 
+            git commit -m "$commit_message"
+            git push origin "$username/week-$week_number"
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
             git pull origin "$username/week-$week_number"
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
