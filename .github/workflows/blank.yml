@@ -60,8 +60,8 @@ jobs:
           if [[ -z $target_branch ]];then
             echo "create target branch" 
             git checkout -b "$username/week-$week_number"
-            cat "../${{ env.FILE_NAME }}"
-            cat "../$FILE_NAME"
+            cat "../$FILE_NAME" >> $directory
+            ls -al
           else
             echo "has target branch"
             git checkout -t "origin/$username/week-$week_number"
