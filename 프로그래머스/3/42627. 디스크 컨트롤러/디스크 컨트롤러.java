@@ -6,12 +6,12 @@ class Solution {
         int jobCount = jobs.length;
         int answer = 0;
         
-        int idx = 0;
+        int jobIdx = 0;
         int[] runJob = {0, 0};
         PriorityQueue<int[]> waitQueue = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
         for (int i = 0; i <= 500000; i++) {
-           	while (idx < jobCount && jobs[idx][0] <= i) {
-                waitQueue.add(jobs[idx++]);
+           	while (jobIdx < jobCount && jobs[jobIdx][0] <= i) {
+                waitQueue.add(jobs[jobIdx++]);
             }
             if (!waitQueue.isEmpty()) {
                 if (runJob[1] > i) {
