@@ -27,7 +27,7 @@ jobs:
       - name: Clone target repository
         run: git clone https://ProtoSeo:${{ secrets.GH_PAT }}@github.com/anti-fragile-study/algorithm-study.git
       - name: test-1
-        jrun: ls -al
+        run: ls -al
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
