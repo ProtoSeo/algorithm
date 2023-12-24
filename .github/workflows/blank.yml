@@ -50,6 +50,8 @@ jobs:
           echo ${{ env.FILE_NAME }}
           
           cd algorithm-study
+          git config --global user.email "proto_seo@naver.com"
+          git config --global user.name "ProtoSeo"
           username=protoseo
           branches=$(git branch -r)
           echo $branches
