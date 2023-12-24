@@ -49,9 +49,9 @@ jobs:
           echo $target_branch
           echo $(git branch --show-current)
           if [[ -z target_branch ]];then
-#            git checkout -b "$username/week-$week_number"
-            echo $(git branch --show-current)
+          #            git checkout -b "$username/week-$week_number"
+          echo $(git branch --show-current)
           else
-#            git pull origin "$username/week-$week_number"
-            echo $(git branch --show-current)
+          #            git pull origin "$username/week-$week_number"
+          echo $(git branch --show-current)
           fi
