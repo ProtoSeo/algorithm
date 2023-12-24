@@ -2,7 +2,7 @@ name: commit-with-another-repository
 
 on:
   push:
-    branches: [ "main", "test-workflow" ]
+    branches: [ "main" ]
 
 env:
   ORGANIZATION: anti-fragile-study
@@ -10,7 +10,7 @@ env:
   PROBLEM_LIST_FILE: ../algorithm-study/README.md
 
 jobs:
-  extract-problem:
+  auto-commit-and-push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,10 +28,7 @@ jobs:
           done
           echo ${{ env.FILE_NAME }}
       - name: clone target repository
-        run: |
-          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}"
-          echo $target_uri
-          git clone "https://${{ github.actor }}:${{ secrets.GH_PAT }}@$target_uri"
+        run: git clone "https://$GITHUB_ACTOR:${{ secrets.GH_PAT }}@github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}"
       - name: set up python
         uses: actions/setup-python@v5
         with:
