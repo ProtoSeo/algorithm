@@ -29,7 +29,7 @@ jobs:
           echo ${{ env.FILE_NAME }}
       - name: clone target repository
         run: |
-          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}
+          target_uri="github.com/${{ env.ORGANIZATION }}/${{ env.REPOSITORY }}"
           echo $target_uri
           git clone "https://${{ github.actor }}:${{ secrets.GH_PAT }}@$target_uri"
       - name: set up python
