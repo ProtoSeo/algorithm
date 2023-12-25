@@ -81,7 +81,3 @@ jobs:
           gh pr list | grep "$WEEK_NUMBER_protoseo"
         env:
           GH_TOKEN: ${{ github.token }}
-      - name: test2
-        if: $I
-        run: |
-          
