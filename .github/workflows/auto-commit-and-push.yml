@@ -57,7 +57,7 @@ jobs:
           echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
           echo "${{ steps.zzuni.outputs.TYPE }}"
           echo "${{ steps.zzuni.outputs.PROBLEM_NUMBER }}"
-      - name: install gh
+      - name: install gh cli
         run : |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -65,13 +65,12 @@ jobs:
           && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
           && sudo apt update \
           && sudo apt install gh -y
-          
-          ls -al
       - name: gh cli test
         run : |
           cd algorithm-study
           gh pr list --author "@me"
           echo "-------------"
-          gh pr list
+          gh pr list | grep "$WEEK_NUMBER_protoseo"
         env:
           GH_TOKEN: ${{ github.token }}
+          WEEK_NUMBER: ${{ steps.zzuni.outputs.WEEK_NUMBER }}
