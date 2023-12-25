@@ -55,8 +55,11 @@ jobs:
             echo "$line" >> "$GITHUB_OUTPUT"
           done < problem/result.txt
       - name: test0
-        if: ${{ env.IS_NOT_CONTAINS }}
+        if: ${{ env.IS_NOT_CONTAINS == 'true' }}
         run : echo "Bye World"
+      - name: test44
+        if: ${{ env.IS_NOT_CONTAINS == 'false' }}
+        run: echo "Hello World"
       - name: test1
         run : |
           echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
