@@ -8,6 +8,7 @@ env:
   ORGANIZATION: anti-fragile-study
   REPOSITORY: algorithm-study
   PROBLEM_LIST_FILE: ../algorithm-study/README.md
+  IS_NOT_CONTAINS: false
 
 jobs:
   auto-commit-and-push:
@@ -44,7 +45,8 @@ jobs:
         run: |
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
-            exit 0
+            echo "IS_NOT_CONTAINS=true" >> $GITHUB_ENV 
+            exit 1
           fi
           
           IFS=$'\n'
@@ -52,6 +54,10 @@ jobs:
             echo $line
             echo "$line" >> "$GITHUB_OUTPUT"
           done < problem/result.txt
+      - name: test0
+        if: ${{ failure() && steps.zzuni.conclusion == 'failure' }}
+
+
       - name: test1
         run : |
           echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
@@ -71,8 +77,12 @@ jobs:
           gh pr list --author "@me"
           echo "-------------"
           echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
-          echo "$WEEK_NUMBER_protoseo"
+          title="${{ steps.zzuni.outputs.WEEK_NUMBER }}_protoseo"
+          echo $title
           gh pr list | grep "$WEEK_NUMBER_protoseo"
         env:
           GH_TOKEN: ${{ github.token }}
-          WEEK_NUMBER: ${{ steps.zzuni.outputs.WEEK_NUMBER }}
+      - name: test2
+        if: $I
+        run: |
+          
