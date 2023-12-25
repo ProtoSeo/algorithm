@@ -38,9 +38,6 @@ jobs:
           python-version: '3.10'
       - name: run python script
         run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
-        env:
-          FILE_NAME: ${{ env.FILE_NAME }}
-          PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
       - name: set problem information to env
         id: set-problem-info
         run: |
@@ -52,20 +49,16 @@ jobs:
           echo "CONTAINS_PROBLEM=true" >> $GITHUB_ENV 
           IFS=$'\n'
           while read -r line; do
-            echo "$line" >> "$GITHUB_OUTPUT"
+            echo "$line" >> $GITHUB_ENV
           done < problem/result.txt
       - name: create commit message
         id: create-commit-message
         if: ${{ env.CONTAINS_PROBLEM == 'true' }}
         run: |
-          echo $ORGANIZATION
-          type=${{ steps.set-problem-info.outputs.TYPE }}
-          problem_number=${{ steps.set-problem-info.outputs.PROBLEM_NUMBER }}
-          problem_name=${{ steps.set-problem-info.outputs.PROBLEM_NAME }}
-          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
-            echo "COMMIT_MESSAGE=프로그래머스 $problem_name 문제 풀이" >> "$GITHUB_OUTPUT"
+          if [[ -n $(echo $TYPE | { grep "PRGMS" || true; }) ]];then
+            echo "COMMIT_MESSAGE=프로그래머스 $PROBLEM_NAME 문제 풀이" >> $GITHUB_ENV
           else
-            echo "COMMIT_MESSAGE=백준 $problem_number 번 $problem_name 문제 풀이" >> "$GITHUB_OUTPUT"
+            echo "COMMIT_MESSAGE=백준 $PROBLEM_NUMBER 번 $PROBLEM_NAME 문제 풀이" >> $GITHUB_ENV
           fi
       - name: push problem to target branch
         if: ${{ env.CONTAINS_PROBLEM == 'true' }}
@@ -74,13 +67,10 @@ jobs:
           git config --global user.email "$EMAIL"
           git config --global user.name "$USERNAME" 
           
-          week_number=${{ steps.set-problem-info.outputs.WEEK_NUMBER }}
-          problem_name=${{ steps.set-problem-info.outputs.PROBLEM_NAME }}
-          language=${{ steps.set-problem-info.outputs.SOLVED_LANGUAGE }}
-          target_branch="$USERNAME/week-$week_number"
+          target_branch="$USERNAME/week-$WEEK_NUMBER"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
-          directory="week-$week_number/$USERNAME/"
-          problem="$problem_name.$language"
+          directory="week-$WEEK_NUMBER/$USERNAME/"
+          problem="$PROBLEM_NAME.$SOLVED_LANGUAGE"
 
           ### Checkout target branch
           if [[ -z $has_target_branch ]];then
@@ -94,13 +84,10 @@ jobs:
           mkdir -p $directory
           cat "../$FILE_NAME" >> $directory$problem
           git add .
-          git commit -m "${{ steps.create-commit-message.outputs.COMMIT_MESSAGE }}"
+          git commit -m "$COMMIT_MESSAGE"
 #          git push origin "$target_branch"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EMAIL: ${{ env.EMAIL }}
-          USERNAME: ${{ env.USERNAME }}
-          FILE_NAME: ${{ env.FILE_NAME }}
       - name: install gh cli
         run : |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
@@ -112,11 +99,9 @@ jobs:
       - name: gh cli test
         run : |
           cd algorithm-study
-          gh pr list --author "@me"
           echo "-------------"
-          echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
-          title="${{ steps.zzuni.outputs.WEEK_NUMBER }}_protoseo"
+          title="$WEEK_NUMBER_protoseo"
           echo $title
-          gh pr list | grep "$WEEK_NUMBER_protoseo"
+          gh pr list | grep $title
         env:
           GH_TOKEN: ${{ github.token }}
