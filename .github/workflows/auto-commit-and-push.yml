@@ -70,6 +70,8 @@ jobs:
           cd algorithm-study
           gh pr list --author "@me"
           echo "-------------"
+          echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
+          echo "$WEEK_NUMBER_protoseo"
           gh pr list | grep "$WEEK_NUMBER_protoseo"
         env:
           GH_TOKEN: ${{ github.token }}
