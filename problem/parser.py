@@ -12,9 +12,9 @@ def parse_problem_info(file_name):
     return [problem_type, problem_number, problem_name, language]
 
 
-if len(sys.argv) != 3:
-    print("Please input target problem file directory")
-    exit(1)
+if len(sys.argv) != 3 or not re.search('(?:/[^/]+){3}/?', sys.argv[1]):
+    print("please check script input")
+    exit(0)
 
 target_problem_file_name = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -49,9 +49,9 @@ target_problem_info = parse_problem_info(target_problem_file_name)
 for key in problems_by_week:
     if target_problem_info[0]+ ' ' + target_problem_info[1] in problems_by_week[key]:
         result_file = open(os.path.join(script_dir, "result.txt"), 'w')
-        result = f"week={key}\n" \
-                 f"type={target_problem_info[0]}\n" \
-                 f"number={target_problem_info[1]}\n" \
-                 f"name={target_problem_info[2]}\n" \
-                 f"language={target_problem_info[3]}\n"
+        result = f"WEEK_NUMBER={key}\n" \
+                 f"TYPE={target_problem_info[0]}\n" \
+                 f"PROBLEM_NUMBER={target_problem_info[1]}\n" \
+                 f"PROBLEM_NAME={target_problem_info[2]}\n" \
+                 f"SOLVED_LANGUAGE={target_problem_info[3]}\n"
         result_file.write(result)
