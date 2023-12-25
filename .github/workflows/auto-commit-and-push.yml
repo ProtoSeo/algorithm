@@ -2,7 +2,7 @@ name: commit-with-another-repository
 
 on:
   push:
-    branches: [ "main", "test-workflow"]
+    branches: [ "main" ]
 
 env:
   ORGANIZATION: anti-fragile-study
