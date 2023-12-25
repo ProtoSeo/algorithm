@@ -1,4 +1,4 @@
-name: commit-with-another-repository
+name: auto-commit-and-push-target-repository
 
 on:
   push:
@@ -8,6 +8,9 @@ env:
   ORGANIZATION: anti-fragile-study
   REPOSITORY: algorithm-study
   PROBLEM_LIST_FILE: ../algorithm-study/README.md
+  EMAIL: proto_seo@naver.com
+  USERNAME: protoseo
+  CONTAINS_PROBLEM: false
 
 jobs:
   auto-commit-and-push:
@@ -34,41 +37,48 @@ jobs:
         with:
           python-version: '3.10'
       - name: run python script
-        id: run-python-script
         run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
-        env:
-          FILE_NAME: ${{ env.FILE_NAME }}
-          PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
-      - name: create commit message, and push target repository branch
+      - name: set problem information to env
         run: |
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
             exit 0
           fi
-          parse_result=$(cat problem/result.txt)
-          week_number=$(echo $parse_result | grep -oE 'week=[0-9]+' | sed 's/^week=//')
-          type=$(echo $parse_result | grep -oE 'type=[A-Z]+' | sed 's/^type=//')
-          problem_number=$(echo $parse_result | grep -oE 'number=[0-9]+' | sed 's/^number=//')
-          problem_name=$(echo $parse_result | grep -oE 'name=([^\n]+)' | sed 's/^name=//' | sed 's/...$//')
-          language=$(echo $parse_result | grep -oE 'language=[a-z]+' | sed 's/^language=//')
           
-          ### Create Commit Message
-          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
-            commit_message="프로그래머스 $problem_name 문제 풀이"
+          echo "CONTAINS_PROBLEM=true" >> $GITHUB_ENV 
+          IFS=$'\n'
+          while read -r line; do
+            echo "$line" >> $GITHUB_ENV
+          done < problem/result.txt
+      - name: create commit message
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run: |
+          if [[ -n $(echo $TYPE | { grep "PRGMS" || true; }) ]];then
+            echo "COMMIT_MESSAGE=프로그래머스 $PROBLEM_NAME 문제 풀이" >> $GITHUB_ENV
           else
-            commit_message="백준 $problem_number 번 $problem_name 문제 풀이"
-          fi 
-          
+            echo "COMMIT_MESSAGE=백준 $PROBLEM_NUMBER 번 $PROBLEM_NAME 문제 풀이" >> $GITHUB_ENV
+          fi
+      - name: install gh cli
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run : |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+      - name: push problem to target branch
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run: |
           cd algorithm-study
-          git config --global user.email "proto_seo@naver.com"
-          git config --global user.name "$GITHUB_ACTOR" 
+          git config --global user.email "$EMAIL"
+          git config --global user.name "$USERNAME" 
           
-          username=$(echo $GITHUB_ACTOR | tr [:upper:] [:lower:]) 
-          target_branch="$username/week-$week_number"
+          target_branch="$USERNAME/week-$WEEK_NUMBER"
           has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
-          directory="week-$week_number/$username/"
-          problem="$problem_name.$language"
-          
+          directory="week-$WEEK_NUMBER/$USERNAME/"
+          problem="$PROBLEM_NAME.$SOLVED_LANGUAGE"
+
           ### Checkout target branch
           if [[ -z $has_target_branch ]];then
             echo "create target branch" 
@@ -77,11 +87,26 @@ jobs:
             echo "already has target branch"
             git checkout -t "origin/$target_branch"
           fi
-          
+
           mkdir -p $directory
           cat "../$FILE_NAME" >> $directory$problem
           git add .
-          git commit -m "$commit_message"
-          git push origin "$username/week-$week_number"
+          git commit -m "$COMMIT_MESSAGE"
+          git push origin "$target_branch"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create-pull-request
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run : |
+          cd algorithm-study
+          
+          title="${WEEK_NUMBER}_${USERNAME}"
+          git branch --show-current
+          
+          has_not_pr=$(gh pr list --state all | { grep $title || true; })
+          if [[ -z $has_not_pr ]];then
+            gh pr create --title "$title"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
