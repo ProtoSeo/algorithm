@@ -8,7 +8,9 @@ env:
   ORGANIZATION: anti-fragile-study
   REPOSITORY: algorithm-study
   PROBLEM_LIST_FILE: ../algorithm-study/README.md
-  IS_NOT_CONTAINS: false
+  EMAIL: proto_seo@naver.com
+  USERNAME: protoseo
+  CONTAINS_PROBLEM: false
 
 jobs:
   auto-commit-and-push:
@@ -35,36 +37,70 @@ jobs:
         with:
           python-version: '3.10'
       - name: run python script
-        id: run-python-script
         run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
         env:
           FILE_NAME: ${{ env.FILE_NAME }}
           PROBLEM_LIST_FILE: ${{ env.PROBLEM_LIST_FILE }}
-      - name: create commit message, and push target repository branch
-        id: zzuni
+      - name: set problem information to env
+        id: set-problem-info
         run: |
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
-            echo "IS_NOT_CONTAINS=true" >> $GITHUB_ENV 
             exit 0
           fi
           
+          echo "CONTAINS_PROBLEM=true" >> $GITHUB_ENV 
           IFS=$'\n'
           while read -r line; do
-            echo $line
             echo "$line" >> "$GITHUB_OUTPUT"
           done < problem/result.txt
-      - name: test0
-        if: ${{ env.IS_NOT_CONTAINS == 'true' }}
-        run : echo "Bye World"
-      - name: test44
-        if: ${{ env.IS_NOT_CONTAINS == 'false' }}
-        run: echo "Hello World"
-      - name: test1
-        run : |
-          echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
-          echo "${{ steps.zzuni.outputs.TYPE }}"
-          echo "${{ steps.zzuni.outputs.PROBLEM_NUMBER }}"
+      - name: create commit message
+        id: create-commit-message
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run: |
+          echo $ORGANIZATION
+          type=${{ steps.set-problem-info.outputs.TYPE }}
+          problem_number=${{ steps.set-problem-info.outputs.PROBLEM_NUMBER }}
+          problem_name=${{ steps.set-problem-info.outputs.PROBLEM_NAME }}
+          if [[ -n $(echo $type | { grep "PRGMS" || true; }) ]];then
+            echo "COMMIT_MESSAGE=프로그래머스 $problem_name 문제 풀이" >> "$GITHUB_OUTPUT"
+          else
+            echo "COMMIT_MESSAGE=백준 $problem_number 번 $problem_name 문제 풀이" >> "$GITHUB_OUTPUT"
+          fi
+      - name: push problem to target branch
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run: |
+          cd algorithm-study
+          git config --global user.email "$EMAIL"
+          git config --global user.name "$USERNAME" 
+          
+          week_number=${{ steps.set-problem-info.outputs.WEEK_NUMBER }}
+          problem_name=${{ steps.set-problem-info.outputs.PROBLEM_NAME }}
+          language=${{ steps.set-problem-info.outputs.SOLVED_LANGUAGE }}
+          target_branch="$USERNAME/week-$week_number"
+          has_target_branch=$(git branch -r | { grep "origin/$target_branch" || true; })
+          directory="week-$week_number/$USERNAME/"
+          problem="$problem_name.$language"
+
+          ### Checkout target branch
+          if [[ -z $has_target_branch ]];then
+            echo "create target branch" 
+            git checkout -b "$target_branch"
+          else
+            echo "already has target branch"
+            git checkout -t "origin/$target_branch"
+          fi
+
+          mkdir -p $directory
+          cat "../$FILE_NAME" >> $directory$problem
+          git add .
+          git commit -m "${{ steps.create-commit-message.outputs.COMMIT_MESSAGE }}"
+#          git push origin "$target_branch"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EMAIL: ${{ env.EMAIL }}
+          USERNAME: ${{ env.USERNAME }}
+          FILE_NAME: ${{ env.FILE_NAME }}
       - name: install gh cli
         run : |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
