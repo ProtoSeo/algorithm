@@ -56,8 +56,7 @@ jobs:
           done < problem/result.txt
       - name: test0
         if: ${{ failure() && steps.zzuni.conclusion == 'failure' }}
-
-
+        run : echo "Bye World"
       - name: test1
         run : |
           echo "${{ steps.zzuni.outputs.WEEK_NUMBER }}"
