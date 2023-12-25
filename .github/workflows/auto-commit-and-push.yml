@@ -73,3 +73,5 @@ jobs:
           gh pr list --author "@me"
           echo "-------------"
           gh pr list
+        env:
+          GH_TOKEN: ${{ github.token }}
