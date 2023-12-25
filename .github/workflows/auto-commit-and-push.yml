@@ -46,7 +46,7 @@ jobs:
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
             echo "IS_NOT_CONTAINS=true" >> $GITHUB_ENV 
-            exit 1
+            exit 0
           fi
           
           IFS=$'\n'
@@ -55,7 +55,7 @@ jobs:
             echo "$line" >> "$GITHUB_OUTPUT"
           done < problem/result.txt
       - name: test0
-        if: ${{ failure() && steps.zzuni.conclusion == 'failure' }}
+        if: ${{ env.IS_NOT_CONTAINS }}
         run : echo "Bye World"
       - name: test1
         run : |
