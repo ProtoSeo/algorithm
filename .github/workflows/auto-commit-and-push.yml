@@ -99,15 +99,15 @@ jobs:
       - name: gh cli test
         run : |
           cd algorithm-study
-          echo "-------------"
-          echo $WEEK_NUMBER
-          echo $USERNAME
-          echo $WEEK_NUMBER_$USERNAME
-          echo "$WEEK_NUMBER_$USERNAME"
+          echo $WEEK_NUMBER + "_" + $USERNAME
           title=$WEEK_NUMBER
           title+="_"
           title+=$USERNAME
           echo $title
-          gh pr list | grep $title
+          
+          gh pr list | { grep $title || true; }
+          gh pr list --state closed 
+          gh pr list --state merged
+          gh pr list
         env:
           GH_TOKEN: ${{ github.token }}
