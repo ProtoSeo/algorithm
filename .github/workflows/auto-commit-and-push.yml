@@ -39,7 +39,6 @@ jobs:
       - name: run python script
         run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
       - name: set problem information to env
-        id: set-problem-info
         run: |
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
@@ -52,7 +51,6 @@ jobs:
             echo "$line" >> $GITHUB_ENV
           done < problem/result.txt
       - name: create commit message
-        id: create-commit-message
         if: ${{ env.CONTAINS_PROBLEM == 'true' }}
         run: |
           if [[ -n $(echo $TYPE | { grep "PRGMS" || true; }) ]];then
@@ -94,7 +92,7 @@ jobs:
           cat "../$FILE_NAME" >> $directory$problem
           git add .
           git commit -m "$COMMIT_MESSAGE"
-#          git push origin "$target_branch"
+          git push origin "$target_branch"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -107,9 +105,8 @@ jobs:
           git branch --show-current
           
           has_not_pr=$(gh pr list --state all | { grep $title || true; })
-          echo $has_not_pr
-#          if [[ -n $has_not_pr ]];then
-#            gh pr create --title "$title"
-#          fi
+          if [[ -z $has_not_pr ]];then
+            gh pr create --title "$title"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
