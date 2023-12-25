@@ -100,6 +100,10 @@ jobs:
         run : |
           cd algorithm-study
           echo "-------------"
+          echo $WEEK_NUMBER
+          echo $USERNAME
+          echo $WEEK_NUMBER_$USERNAME
+          echo "$WEEK_NUMBER_$USERNAME"
           title="$WEEK_NUMBER_protoseo"
           echo $title
           gh pr list | grep $title
