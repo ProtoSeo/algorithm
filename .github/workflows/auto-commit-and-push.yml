@@ -104,7 +104,9 @@ jobs:
           echo $USERNAME
           echo $WEEK_NUMBER_$USERNAME
           echo "$WEEK_NUMBER_$USERNAME"
-          title="$WEEK_NUMBER_protoseo"
+          title=$WEEK_NUMBER
+          title+="_"
+          title+=$USERNAME
           echo $title
           gh pr list | grep $title
         env:
