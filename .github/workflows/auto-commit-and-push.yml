@@ -104,14 +104,12 @@ jobs:
           cd algorithm-study
           
           title="${WEEK_NUMBER}_${USERNAME}"
-          
           git branch --show-current
-          already_closed=$(gh pr list --state closed | { grep $title || true; })
-          already_open=$(gh pr list | { grep $title || true; })
-          echo $already_closed
-          echo $already_open
-          gh pr list --state closed 
-          gh pr list --state merged
-          gh pr list
+          
+          has_not_pr=$(gh pr list --state all | { grep $title || true; })
+          echo $has_not_pr
+#          if [[ -n $has_not_pr ]];then
+#            gh pr create --title "$title"
+#          fi
         env:
           GH_TOKEN: ${{ github.token }}
