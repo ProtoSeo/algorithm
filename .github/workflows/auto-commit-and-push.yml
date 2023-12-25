@@ -106,7 +106,7 @@ jobs:
           
           has_not_pr=$(gh pr list --state all | { grep $title || true; })
           if [[ -z $has_not_pr ]];then
-            gh pr create --title "$title"
+            gh pr create --base main --title "$title" --body "" 
           fi
         env:
           GH_TOKEN: ${{ github.token }}
