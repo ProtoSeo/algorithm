@@ -60,6 +60,15 @@ jobs:
           else
             echo "COMMIT_MESSAGE=백준 $PROBLEM_NUMBER 번 $PROBLEM_NAME 문제 풀이" >> $GITHUB_ENV
           fi
+      - name: install gh cli
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
+        run : |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
       - name: push problem to target branch
         if: ${{ env.CONTAINS_PROBLEM == 'true' }}
         run: |
@@ -88,24 +97,19 @@ jobs:
 #          git push origin "$target_branch"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: install gh cli
-        run : |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
-      - name: gh cli test
+
+      - name: create-pull-request
+        if: ${{ env.CONTAINS_PROBLEM == 'true' }}
         run : |
           cd algorithm-study
-          echo $WEEK_NUMBER + "_" + $USERNAME
-          title=$WEEK_NUMBER
-          title+="_"
-          title+=$USERNAME
-          echo $title
           
-          gh pr list | { grep $title || true; }
+          title="${WEEK_NUMBER}_${USERNAME}"
+          
+          git branch --show-current
+          already_closed=$(gh pr list --state closed | { grep $title || true; })
+          already_open=$(gh pr list | { grep $title || true; })
+          echo $already_closed
+          echo $already_open
           gh pr list --state closed 
           gh pr list --state merged
           gh pr list
