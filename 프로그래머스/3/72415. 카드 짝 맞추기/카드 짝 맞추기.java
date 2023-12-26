@@ -42,15 +42,15 @@ class Solution {
             int dist2 = bfs(start, points[i][1]) + bfs(points[i][1], points[i][0]) + 2;
 
             hasPoint[i] = false;
-            map[points[i][0][1]][points[i][0][0]] = 0;
-            map[points[i][1][1]][points[i][1][0]] = 0;
+            map[points[i][0][0]][points[i][0][1]] = 0;
+            map[points[i][1][0]][points[i][1][1]] = 0;
 
             int[] nextStart = (dist1 < dist2) ? points[i][1] : points[i][0];
             int nextDist = (dist1 < dist2) ? dist1 : dist2;
             find(idx + 1, cnt + nextDist, nextStart);
 
-            map[points[i][0][1]][points[i][0][0]] = i;
-            map[points[i][1][1]][points[i][1][0]] = i;
+            map[points[i][0][0]][points[i][0][1]] = i;
+            map[points[i][1][0]][points[i][1][1]] = i;
             hasPoint[i] = true;
         }
     }
