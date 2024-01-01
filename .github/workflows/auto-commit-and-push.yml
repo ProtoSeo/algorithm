@@ -109,4 +109,4 @@ jobs:
             gh pr create --base main --title "$title" --body "" 
           fi
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
