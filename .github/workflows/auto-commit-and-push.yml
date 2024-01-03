@@ -89,7 +89,7 @@ jobs:
           fi
 
           mkdir -p $directory
-          cat "../$FILE_NAME" >> $directory$problem
+          cat "../$FILE_NAME" > $directory$problem
           git add .
           git commit -m "$COMMIT_MESSAGE"
           git push origin "$target_branch"
