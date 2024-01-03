@@ -14,39 +14,25 @@ class Solution {
     }
     
     private boolean unlock(int[][] key) {
-        boolean result = false;
         for (int i = 0; i < m + n - 1; i++) {
             for (int j = 0; j < m + n - 1; j++) {
                 for (int k = 0; k < 4; k++) {
                     key = rotate(key);
-                    if (canInsert(key, i, j)) {
-                        insert(key, i, j);
-                        result |= isUnlock();
-                        remove(key, i, j);
+                    insert(key, i, j);
+                    if (isUnlock()) {
+                        return true;
                     }
+                    remove(key, i, j);
                 }
             }
         }
-        return result;
-    }
-    
-    private boolean canInsert(int[][] key, int y, int x) {
-        for (int i = y; i < y + m; i++) {
-            for (int j = x; j < x + m; j++) {
-                if (key[i - y][j - x] == 1 && map[i][j] == 1) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return false;
     }
     
     private void insert(int[][] key, int y, int x) {
         for (int i = y; i < y + m; i++) {
             for (int j = x; j < x + m; j++) {
-                if (key[i - y][j - x] == 1) {
-                    map[i][j] = 1;
-                }
+                map[i][j] += key[i - y][j - x];
             }
         }
     }
@@ -54,9 +40,7 @@ class Solution {
     private void remove(int[][] key, int y, int x) {
         for (int i = y; i < y + m; i++) {
             for (int j = x; j < x + m; j++) {
-                if (key[i - y][j - x] == 1) {
-                    map[i][j] = 0;
-                }
+                map[i][j] -= key[i - y][j - x];
             }
         }
     }
@@ -64,7 +48,7 @@ class Solution {
     private boolean isUnlock() {
         for (int i = m - 1; i < m + n - 1; i++) {
             for (int j = m - 1; j < m + n - 1; j++) {
-                if (map[i][j] == 0) {
+                if (map[i][j] != 1) {
                     return false;
                 }
             }
