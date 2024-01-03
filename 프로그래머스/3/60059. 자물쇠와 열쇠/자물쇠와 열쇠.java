@@ -10,6 +10,7 @@ class Solution {
               	map[i][j] = lock[i - m + 1][j - m + 1]; 
             }
         }
+        
         return unlock(key);
     }
     
