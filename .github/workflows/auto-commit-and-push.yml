@@ -40,6 +40,12 @@ jobs:
         run: python problem/parser.py $FILE_NAME $PROBLEM_LIST_FILE
       - name: set problem information to env
         run: |
+          line_count=$( ( wc -l < ${{ env.FILE_NAME }} ) )
+          if [[ $line_count -le 6 ]];then
+            echo "this file was invalid upload"
+            exit 0
+          fi
+          
           if [[ ! -e "problem/result.txt" ]];then
             echo "can't found problem in problem list"
             exit 0
