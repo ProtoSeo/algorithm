@@ -112,7 +112,7 @@ jobs:
           
           has_not_pr=$(gh pr list --state all | { grep $title || true; })
           if [[ -z $has_not_pr ]];then
-            gh pr create --base main --title "$title" --body "" 
+            gh pr create --base main --title "$title" --body "" --assignee "@me"
           fi
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
