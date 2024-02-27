@@ -39,7 +39,11 @@ for line in readme_file:
         continue
 
     if is_week_start:
-        problem_number = re.findall('/(\d+)"', line)[0]
+        problem_number_candidates = re.findall('/(\d+)"', line)
+        if len(problem_number_candidates) == 0:
+            continue
+
+        problem_number = problem_number_candidates[0]
         if "programmers" in line:
             problems_by_week[week_number].append('PRGMS ' + problem_number)
         elif "acmicpc" in line:
