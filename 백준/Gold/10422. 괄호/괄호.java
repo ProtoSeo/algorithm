@@ -10,7 +10,7 @@ public class Main {
         for (int i = 4; i <= 5000; i += 2) {
             dp[i][0] = (dp[i - 2][0] + dp[i - 2][1]) % MOD;
             for (int j = 2; j < i; j += 2) {
-                dp[i][1] += (((dp[j][0] + dp[j][1]) % MOD) * dp[i - j][0]) % MOD;
+                dp[i][1] += ((dp[j][0] + dp[j][1]) * dp[i - j][0]) % MOD;
             }
             dp[i][1] %= MOD;
         }
