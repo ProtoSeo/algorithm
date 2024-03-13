@@ -57,7 +57,11 @@ class Game {
         for (int i = 0; i < 3; i++) {
             this.bars[i] = new ArrayList<>();
             for (int j = 0; j < bars[i].length(); j++) {
-                this.bars[i].add(bars[i].charAt(j));
+                char c = bars[i].charAt(j);
+                if (this.bars[i].isEmpty() && c == 'A' + i) {
+                    continue;
+                }
+                this.bars[i].add(c);
             }
         }
         this.move = move;
@@ -89,7 +93,9 @@ class Game {
             }
         }
         char c = movedBars[s].remove(this.bars[s].size() - 1);
-        movedBars[e].add(c);
+        if (!(movedBars[e].isEmpty() && c == 'A' + e)) {
+            movedBars[e].add(c);
+        }
         return new Game(movedBars, this.move + 1);
     }
 
