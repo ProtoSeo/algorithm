@@ -13,14 +13,11 @@ public class Main {
             for (int i = 0; i < n; i++) {
                 ary[i] = Integer.parseInt(stk.nextToken());
             }
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
             long answer = 0;
+            int max = -1;
             for (int i = n - 1; i >= 0; i--) {
-                while (!pq.isEmpty() && pq.peek() <= ary[i]) {
-                    pq.poll();
-                }
-                pq.add(ary[i]);
-                answer += pq.peek() - ary[i];
+                max = Math.max(max, ary[i]);
+                answer += max - ary[i];
             }
             sb.append(answer).append('\n');
         }
