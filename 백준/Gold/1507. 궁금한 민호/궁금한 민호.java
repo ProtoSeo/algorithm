@@ -17,7 +17,6 @@ public class Main {
             }
         }
 
-        boolean canBuild = true;
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = 0; k < n; k++) {
@@ -27,21 +26,18 @@ public class Main {
                     if (ary[i][k] + ary[k][j] == ary[i][j]) {
                         result[i][j] = 0;
                     } else if (ary[i][k] + ary[k][j] < ary[i][j]) {
-                        canBuild = false;
+                        System.out.println(-1);
+                        return;
                     }
                 }
             }
         }
-        if (canBuild) {
-            int answer = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 1; j < n; j++) {
-                    answer += result[i][j];
-                }
+        int answer = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                answer += result[i][j];
             }
-            System.out.println(answer);
-        } else {
-            System.out.println(-1);
         }
+        System.out.println(answer);
     }
 }
