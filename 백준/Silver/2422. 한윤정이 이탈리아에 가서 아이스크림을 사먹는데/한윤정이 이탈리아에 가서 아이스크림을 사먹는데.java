@@ -9,23 +9,20 @@ public class Main {
         int n = Integer.parseInt(stk.nextToken());
         int m = Integer.parseInt(stk.nextToken());
 
-        Set<Integer>[] sets = new Set[n + 1];
-        for (int i = 0; i <= n; i++) {
-            sets[i] = new HashSet<>();
-        }
+        boolean[][] cantCombine = new boolean[n + 1][n + 1];
         for (int i = 0; i < m; i++) {
             stk = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(stk.nextToken());
             int b = Integer.parseInt(stk.nextToken());
-            sets[a].add(b);
-            sets[b].add(a);
+            cantCombine[a][b] = true;
+            cantCombine[b][a] = true;
         }
 
         int answer = 0;
         for (int i = 1; i <= n; i++) {
             for (int j = i + 1; j <= n; j++) {
                 for (int k = j + 1; k <= n; k++) {
-                    if (sets[i].contains(j) || sets[j].contains(k) || sets[k].contains(i)) {
+                    if (cantCombine[i][j] || cantCombine[j][k] || cantCombine[k][i]) {
                         continue;
                     }
                     answer++;
