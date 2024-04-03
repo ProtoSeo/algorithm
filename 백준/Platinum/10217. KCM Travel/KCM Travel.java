@@ -29,14 +29,45 @@ public class Main {
             adjList[u].add(new Node(u, v, c, d));
         }
 
+        for (int i = 0; i <= n; i++) {
+            adjList[i].sort((o1, o2) -> o1.d - o2.d);
+        }
+
+        Deque<int[]> q = new ArrayDeque<>();
+        q.add(new int[]{1, 0, 0});
         result[1][0] = 0;
-        for (int i = 0; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                for (Node next : adjList[j]) {
-                    if (i + next.c <= m) {
-                        result[next.e][i + next.c] = Math.min(result[next.e][i + next.c], result[j][i] + next.d);
-                    }
+        while (!q.isEmpty()) {
+            int[] p = q.poll();
+            int s = p[0];
+            int c = p[1];
+            int d = p[2];
+
+            if (s == n) {
+                continue;
+            }
+            if (result[s][c] < d) {
+                continue;
+            }
+
+            for (Node node : adjList[s]) {
+                int next = node.e;
+                int nextCost = node.c + c;
+                int nextDist = node.d + d;
+                if (nextCost > m) {
+                    continue;
                 }
+                if (result[next][nextCost] <= nextDist) {
+                    continue;
+                }
+
+                for (int i = nextCost; i <= m; i++) {
+                    if (result[next][i] > nextDist) {
+                        result[next][i] = nextDist;
+                        continue;
+                    }
+                    break;
+                }
+                q.add(new int[]{next, nextCost, nextDist});
             }
         }
 
