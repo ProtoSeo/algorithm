@@ -16,7 +16,7 @@ public class Main {
         Arrays.sort(snack);
 
         int l = 1;
-        int r = 1_000_000_001;
+        int r = snack[n - 1] + 1;
         int answer = 0;
         while (l < r) {
             int mid = (l + r) / 2;
